@@ -1,10 +1,9 @@
 import os
 from pydantic_ai import Agent, RunContext
-from pydantic_ai.providers import GoogleGLAProvider
+from pydantic_ai.providers.openai import OpenAIProvider
 from app.diet_fit_app.models import UserInput, CoachResult
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 
 # GPT-4o Agent – Handles workout + diet generation
@@ -12,6 +11,7 @@ gpt4o_agent = Agent(
     model="gpt-4o",
     deps_type=UserInput,
     result_type=CoachResult,
+    providers=[OpenAIProvider(api_key=OPENAI_API_KEY)],
     system_prompt=(
         "You are a fitness and nutrition AI coach. Based on the user's weekly meals, "
         "current weight, weight goal, and workout frequency, provide:\n"
@@ -24,15 +24,18 @@ gpt4o_agent = Agent(
 
 @gpt4o_agent.system_prompt
 async def gpt4o_context(ctx: RunContext[UserInput]):
-    user = ctx.input
+    user = ctx.deps
     return f"The user weighs {user.current_weight}, wants to {user.weight_goal}, and works out {user.workout_frequency}."
 
 
-# Gemini Agent – Tool to estimate time-to-goal from the result of GPT-4o
-gemini_agent = Agent(
-    model="gemini-2.0-flash",
+"""
+# Estimator Agent – Use OpenAI to estimate days-to-goal from the coach result
+"""
+estimator_agent = Agent(
+    model="gpt-4o",
     deps_type=CoachResult,
     result_type=int,
+    providers=[OpenAIProvider(api_key=OPENAI_API_KEY)],
     system_prompt=(
         "You are a health progress analyst AI. Given a workout and diet plan, estimate how many days "
         "it will take the user to reach their weight goal. Consider the user's consistency, frequency, "
@@ -41,24 +44,28 @@ gemini_agent = Agent(
 )
 
 
-@gemini_agent.tool
+@estimator_agent.tool
 async def estimate_days_to_goal(ctx: RunContext[CoachResult],result: CoachResult) -> int:
     """
     Estimate how many days it will take for the user to reach their weight goal
     based on their workout and diet plan.
     """
-    return 0  # Gemini will generate this dynamically
+    return 0  # Estimator will generate this dynamically
 
 
-# Pipeline function – Connect GPT-4o → Gemini → Final response
+# Pipeline function – Connect GPT-4o → Estimator → Final response
 async def run_fitness_pipeline(user_input: UserInput) -> CoachResult:
     # Step 1: Get workout + diet plan from GPT-4o
-    coach_result = await gpt4o_agent.run(user_input)
+    # Step 1: Get workout + diet plan from GPT-4o
+    coach_run = await gpt4o_agent.run(deps=user_input)
+    coach_result = coach_run.output
 
-    # Step 2: Estimate days to reach goal using Gemini
-    estimated_days = await estimate_days_to_goal(coach_result)
+    # Step 2: Estimate days to reach goal using Estimator
+    # Step 2: Estimate days to reach goal using OpenAI
+    estimated_run = await estimator_agent.run(deps=coach_result)
+    estimated_days = estimated_run.output
 
-    # Step 3: Attach Gemini's result and return full package
+    # Step 3: Attach Estimator's result and return full package
     coach_result.estimated_days_to_goal = estimated_days
     return coach_result
 
