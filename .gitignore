@@ -1,0 +1,22 @@
+# Git ignore file for Python project
+
+# Environment files
+.env
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Vim swap files
+*.swp
+*.swo
+
+# Virtual environments
+.venv/
+venv/
+
+# Editor directories and files
+.idea/
+.vscode/
+*.iml
