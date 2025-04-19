@@ -1,13 +1,20 @@
+"""
+main.py: Entry point for the Fitness And Diet FastAPI application.
+Loads environment variables, initializes the FastAPI app, and includes API routes.
+"""
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from app.diet_fit_app.controller import router #Links to the controller
 
-load_dotenv() #Load environment variables
+load_dotenv()  # Load environment variables from .env file
 
 import os
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") #Get the OpenAI API key from the environment variables
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") #Get the Gemini API key from the environment variables
+# Retrieve API keys for external AI providers
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-#Title of API app
+# Initialize FastAPI application
 app = FastAPI(title="Fitness And Diet App")
+
+# Mount API routes defined in the controller
 app.include_router(router)

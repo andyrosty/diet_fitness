@@ -1,12 +1,13 @@
+"""service.py: Core pipeline for generating fitness and diet plans and estimating progress using AI agents."""
 import os
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.providers.openai import OpenAIProvider
 from app.diet_fit_app.models import UserInput, CoachResult
 
+# Load OpenAI API key for AI providers
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-
-# GPT-4o Agent – Handles workout + diet generation
+# GPT-4o Agent – generates workout and diet plans based on user input
 gpt4o_agent = Agent(
     model="gpt-4o",
     deps_type=UserInput,
@@ -24,13 +25,12 @@ gpt4o_agent = Agent(
 
 @gpt4o_agent.system_prompt
 async def gpt4o_context(ctx: RunContext[UserInput]):
+    # Inject dynamic user context into the system prompt
     user = ctx.deps
     return f"The user weighs {user.current_weight}, wants to {user.weight_goal}, and works out {user.workout_frequency}."
 
 
-"""
-# Estimator Agent – Use OpenAI to estimate days-to-goal from the coach result
-"""
+"""Estimator Agent – predicts days to goal from the generated CoachResult"""
 estimator_agent = Agent(
     model="gpt-4o",
     deps_type=CoachResult,
@@ -53,19 +53,22 @@ async def estimate_days_to_goal(ctx: RunContext[CoachResult],result: CoachResult
     return 0  # Estimator will generate this dynamically
 
 
-# Pipeline function – Connect GPT-4o → Estimator → Final response
 async def run_fitness_pipeline(user_input: UserInput) -> CoachResult:
-    # Step 1: Get workout + diet plan from GPT-4o
-    # Step 1: Get workout + diet plan from GPT-4o
+    """
+    Orchestrates the fitness and diet planning pipeline:
+    1. Generate a 7-day workout plan and 3-day diet plan via gpt4o_agent
+    2. Estimate days to reach weight goal via estimator_agent
+    3. Attach estimate and return CoachResult
+    """
+    # Step 1: Generate workout and diet recommendations
     coach_run = await gpt4o_agent.run(deps=user_input)
     coach_result = coach_run.output
 
-    # Step 2: Estimate days to reach goal using Estimator
-    # Step 2: Estimate days to reach goal using OpenAI
+    # Step 2: Predict how many days until the user reaches their goal
     estimated_run = await estimator_agent.run(deps=coach_result)
     estimated_days = estimated_run.output
 
-    # Step 3: Attach Estimator's result and return full package
+    # Step 3: Combine recommendations with progress estimate
     coach_result.estimated_days_to_goal = estimated_days
     return coach_result
 
