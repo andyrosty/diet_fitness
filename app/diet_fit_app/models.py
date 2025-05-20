@@ -84,5 +84,5 @@ class DietPlan(BaseModel):
 class CoachResult(BaseModel):
     # Composite result including the generated workout and diet plans plus progress estimate
     workout_plan: List[WorkoutPlan] = Field(..., description="7-day custom workout schedule")
-    diet_plan: List[DietPlan] = Field(..., description="3-day culturally sensitive diet plan")
+    diet_plan: List[DietPlan] = Field(..., description="7-day culturally sensitive diet plan")
     estimated_days_to_goal: int = Field(..., example=45, description="Projected days to reach target weight")
