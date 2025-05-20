@@ -4,7 +4,7 @@ Loads environment variables, initializes the FastAPI app, and includes API route
 """
 from fastapi import FastAPI
 from dotenv import load_dotenv
-from app.diet_fit_app.controller import router #Links to the controller
+from diet_fit_app.controller import router #Links to the controller
 
 load_dotenv()  # Load environment variables from .env file
 

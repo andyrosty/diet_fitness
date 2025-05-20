@@ -2,8 +2,8 @@
 controller.py: Defines API endpoints for the Diet Fit application.
 """
 from fastapi import APIRouter, HTTPException
-from app.diet_fit_app.models import UserInput,CoachResult
-from app.diet_fit_app.service import run_fitness_pipeline
+from diet_fit_app.models import UserInput,CoachResult
+from diet_fit_app.service import run_fitness_pipeline
 
 
 # Router for nutrition and fitness analysis endpoints

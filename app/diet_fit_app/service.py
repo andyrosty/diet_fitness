@@ -2,7 +2,7 @@
 import os
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.providers.openai import OpenAIProvider
-from app.diet_fit_app.models import UserInput, CoachResult
+from diet_fit_app.models import UserInput, CoachResult
 
 # Load OpenAI API key for AI providers
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -71,4 +71,3 @@ async def run_fitness_pipeline(user_input: UserInput) -> CoachResult:
     # Step 3: Combine recommendations with progress estimate
     coach_result.estimated_days_to_goal = estimated_days
     return coach_result
-
