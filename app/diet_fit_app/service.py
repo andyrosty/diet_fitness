@@ -17,7 +17,7 @@ gpt4o_agent = Agent(
         "You are a fitness and nutrition AI coach. Based on the user's weekly meals, "
         "current weight, weight goal, and workout frequency, provide:\n"
         "1. A 7-day workout plan\n"
-        "2. A 3-day culturally sensitive diet plan\n"
+        "2. A 7-day culturally sensitive diet plan\n"
         "Do not estimate the number of days to reach the goal."
     )
 )
@@ -56,7 +56,7 @@ async def estimate_days_to_goal(ctx: RunContext[CoachResult],result: CoachResult
 async def run_fitness_pipeline(user_input: UserInput) -> CoachResult:
     """
     Orchestrates the fitness and diet planning pipeline:
-    1. Generate a 7-day workout plan and 3-day diet plan via gpt4o_agent
+    1. Generate a 7-day workout plan and 7-day diet plan via gpt4o_agent
     2. Estimate days to reach weight goal via estimator_agent
     3. Attach estimate and return CoachResult
     """
@@ -71,4 +71,3 @@ async def run_fitness_pipeline(user_input: UserInput) -> CoachResult:
     # Step 3: Combine recommendations with progress estimate
     coach_result.estimated_days_to_goal = estimated_days
     return coach_result
-
