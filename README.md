@@ -119,7 +119,3 @@ diet_fitness/
 }
 ```
 
-
-## License
-
-[Specify your license here]
