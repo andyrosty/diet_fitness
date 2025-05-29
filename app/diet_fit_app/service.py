@@ -14,7 +14,8 @@ gpt4o_agent = Agent(
     result_type=CoachResult,
     providers=[OpenAIProvider(api_key=OPENAI_API_KEY)],
     system_prompt=(
-        "You are a fitness and nutrition AI coach. Based on the user's weekly meals, "
+        "You are a fitness and nutrition AI coach. Based on the user's dietary preferences "
+        "(typical meals, restrictions, favorites, and eating habits), "
         "current weight, weight goal, and workout frequency, provide:\n"
         "1. A 7-day workout plan\n"
         "2. A 7-day culturally sensitive diet plan\n"
@@ -27,7 +28,19 @@ gpt4o_agent = Agent(
 async def gpt4o_context(ctx: RunContext[UserInput]):
     # Inject dynamic user context into the system prompt
     user = ctx.deps
-    return f"The user weighs {user.current_weight}, wants to {user.weight_goal}, and works out {user.workout_frequency}."
+    return (
+        f"The user weighs {user.current_weight}, wants to {user.weight_goal}, and works out {user.workout_frequency}.\n"
+        f"Dietary information:\n"
+        f"- Typical breakfast: {user.typical_breakfast}\n"
+        f"- Typical lunch: {user.typical_lunch}\n"
+        f"- Typical dinner: {user.typical_dinner}\n"
+        f"- Typical snacks: {user.typical_snacks}\n"
+        f"- Dietary restrictions: {user.dietary_restrictions}\n"
+        f"- Favorite meals: {user.favorite_meals}\n"
+        f"- Comfort foods: {user.comfort_foods}\n"
+        f"- Eating out frequency: {user.eating_out_frequency}\n"
+        f"- Eating out choices: {user.eating_out_choices}"
+    )
 
 
 """Estimator Agent – predicts days to goal from the generated CoachResult"""
