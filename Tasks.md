@@ -414,7 +414,7 @@ This plan outlines the steps to add user authentication (login/signup with JWT) 
   app.include_router(diet_router, prefix="/api")
   ```
 
-### Task 6.2: Update Environment Variables
+### Task 6.2: Update Environment Variables.
 - Add required environment variables to `.env`:
   ```
   OPENAI_API_KEY=your_openai_api_key
