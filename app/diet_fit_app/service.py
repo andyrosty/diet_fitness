@@ -7,9 +7,9 @@ from app.diet_fit_app.models import UserInput, CoachResult
 # Load OpenAI API key for AI providers
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# GPT-4o Agent – generates workout and diet plans based on user input
-gpt4o_agent = Agent(
-    model="gpt-4o",
+# GPT-03 Agent – generates workout and diet plans based on user input
+gpt03_agent = Agent(
+    model="gpt-03",
     deps_type=UserInput,
     result_type=CoachResult,
     providers=[OpenAIProvider(api_key=OPENAI_API_KEY)],
@@ -24,8 +24,8 @@ gpt4o_agent = Agent(
 )
 
 
-@gpt4o_agent.system_prompt
-async def gpt4o_context(ctx: RunContext[UserInput]):
+@gpt03_agent.system_prompt
+async def gpt03_context(ctx: RunContext[UserInput]):
     # Inject dynamic user context into the system prompt
     user = ctx.deps
     return (
@@ -69,12 +69,12 @@ async def estimate_days_to_goal(ctx: RunContext[CoachResult],result: CoachResult
 async def run_fitness_pipeline(user_input: UserInput) -> CoachResult:
     """
     Orchestrates the fitness and diet planning pipeline:
-    1. Generate a 7-day workout plan and 7-day diet plan via gpt4o_agent
+    1. Generate a 7-day workout plan and 7-day diet plan via gpt03_agent
     2. Estimate days to reach weight goal via estimator_agent
     3. Attach estimate and return CoachResult
     """
     # Step 1: Generate workout and diet recommendations
-    coach_run = await gpt4o_agent.run(deps=user_input)
+    coach_run = await gpt03_agent.run(deps=user_input)
     coach_result = coach_run.output
 
     # Step 2: Predict how many days until the user reaches their goal
