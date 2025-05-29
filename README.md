@@ -13,7 +13,7 @@ A FastAPI application that generates personalized fitness and diet plans using A
 
 1. Clone the repository:
    ```
-   git clone <repository-url>
+   git clone https://github.com/yourusername/diet_fitness.git
    cd diet_fitness
    ```
 
@@ -69,6 +69,16 @@ diet_fitness/
 └── README.md                    # Project documentation
 ```
 
+## How It Works
+
+The application uses a two-stage AI pipeline to generate personalized fitness and diet plans:
+
+1. **Plan Generation**: The first stage uses OpenAI's GPT-4o model to analyze the user's dietary preferences, current weight, weight goal, and workout frequency to create a 7-day workout plan and a 7-day culturally sensitive diet plan.
+
+2. **Progress Estimation**: The second stage uses another GPT-4o model to analyze the generated plans and estimate how many days it will take for the user to reach their weight goal, considering the user's consistency, frequency, and intensity of the routine.
+
+The AI models are integrated using the Pydantic-AI library, which provides a structured way to define AI agents and their inputs/outputs.
+
 ## Dependencies
 
 - FastAPI: Web framework for building APIs
@@ -77,42 +87,22 @@ diet_fitness/
 - Pydantic-AI: Extension for AI model integration
 - Python-dotenv: Environment variable management
 - OpenAI: AI model provider
+- Google Generative AI: Alternative AI model provider
 - HTTPX: HTTP client for async requests
 
-## Example Request(Ghanian Diet)
+## Example Request
 
 ```json
 {
-  "weekly_meals": [
-    {
-      "day": "monday",
-      "meals": "Breakfast: Hausa koko with koose. Lunch: Jollof rice with fried chicken. Dinner: Waakye with gari, spaghetti, and boiled egg."
-    },
-    {
-      "day": "tuesday",
-      "meals": "Breakfast: Tea with bread and eggs. Lunch: Banku with okra stew. Dinner: Yam with palava sauce."
-    },
-    {
-      "day": "wednesday",
-      "meals": "Breakfast: Choco Milo with bread. Lunch: Kenkey with fried fish and pepper. Dinner: Light soup with fufu."
-    },
-    {
-      "day": "thursday",
-      "meals": "Breakfast: Tom brown. Lunch: Rice balls with groundnut soup. Dinner: Beans stew with plantain (red red)."
-    },
-    {
-      "day": "friday",
-      "meals": "Breakfast: Rice water with sugar and milk. Lunch: TZ with ayoyo soup. Dinner: Yam porridge with smoked fish."
-    },
-    {
-      "day": "saturday",
-      "meals": "Breakfast: Koko with bofrot. Lunch: Fried rice with kelewele. Dinner: Banku with tilapia and hot pepper."
-    },
-    {
-      "day": "sunday",
-      "meals": "Breakfast: Angwamo with fried egg. Lunch: Jollof with goat meat. Dinner: Fufu with palm nut soup."
-    }
-  ],
+  "typical_breakfast": "Hausa koko with koose, tea with bread and eggs, or Choco Milo with bread",
+  "typical_lunch": "Jollof rice with fried chicken, Banku with okra stew, or Kenkey with fried fish and pepper",
+  "typical_dinner": "Waakye with gari and spaghetti, Yam with palava sauce, or Light soup with fufu",
+  "typical_snacks": "Fruits, nuts, kelewele, or bofrot",
+  "dietary_restrictions": "No specific restrictions",
+  "favorite_meals": "Jollof rice with chicken, Banku with tilapia, Fufu with light soup",
+  "comfort_foods": "Kelewele, Waakye, Fufu with palm nut soup",
+  "eating_out_frequency": "Once a week",
+  "eating_out_choices": "Local restaurants serving traditional Ghanaian dishes, occasionally fast food",
   "current_weight": "190 lbs",
   "weight_goal": "Lose 15 lbs (target: 175 lbs)",
   "workout_frequency": "Workout 3 times per week"
@@ -120,6 +110,26 @@ diet_fitness/
 ```
 
 
+## Screenshots
+
+The application includes a user-friendly interface for submitting information and viewing personalized plans:
+
+![Screenshot 1](Screenshots/screenshot1.png)
+![Screenshot 2](Screenshots/screenshot2.png)
+![Screenshot 3](Screenshots/screenshot3.png)
+
 ## License
 
-[Specify your license here]
+MIT License
+
+Copyright (c) 2025 Diet Fitness App
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
