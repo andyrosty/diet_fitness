@@ -9,7 +9,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # GPT-03 Agent – generates workout and diet plans based on user input
 gpt03_agent = Agent(
-    model="gpt-03",
+    model="03",
     deps_type=UserInput,
     result_type=CoachResult,
     providers=[OpenAIProvider(api_key=OPENAI_API_KEY)],
