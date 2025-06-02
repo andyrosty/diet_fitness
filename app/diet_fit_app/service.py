@@ -2,7 +2,9 @@
 import os
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.providers.openai import OpenAIProvider
+from sqlalchemy.orm import Session
 from app.diet_fit_app.models import UserInput, CoachResult
+from app.db.models import UserPlan, WorkoutPlan as DBWorkoutPlan, DietPlan as DBDietPlan
 
 # Load OpenAI API key for AI providers
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -66,12 +68,13 @@ async def estimate_days_to_goal(ctx: RunContext[CoachResult],result: CoachResult
     return 0  # Estimator will generate this dynamically
 
 
-async def run_fitness_pipeline(user_input: UserInput) -> CoachResult:
+async def run_fitness_pipeline(user_input: UserInput, db: Session = None, user_id: int = None) -> CoachResult:
     """
     Orchestrates the fitness and diet planning pipeline:
     1. Generate a 7-day workout plan and 7-day diet plan via gpt03_agent
     2. Estimate days to reach weight goal via estimator_agent
     3. Attach estimate and return CoachResult
+    4. Store in database if db session and user_id are provided
     """
     # Step 1: Generate workout and diet recommendations
     coach_run = await gpt03_agent.run(deps=user_input)
@@ -83,4 +86,38 @@ async def run_fitness_pipeline(user_input: UserInput) -> CoachResult:
 
     # Step 3: Combine recommendations with progress estimate
     coach_result.estimated_days_to_goal = estimated_days
+
+    # Step 4: Store in database if db session and user_id are provided
+    if db and user_id:
+        # Create user plan record
+        db_plan = UserPlan(
+            user_id=user_id,
+            current_weight=user_input.current_weight,
+            weight_goal=user_input.weight_goal,
+            workout_frequency=user_input.workout_frequency,
+            estimated_days_to_goal=estimated_days
+        )
+        db.add(db_plan)
+        db.flush()  # Get ID without committing
+
+        # Store workout plans
+        for workout in coach_result.workout_plan:
+            db_workout = DBWorkoutPlan(
+                user_plan_id=db_plan.id,
+                day=workout.day,
+                activity=workout.activity
+            )
+            db.add(db_workout)
+
+        # Store diet plans
+        for diet in coach_result.diet_plan:
+            db_diet = DBDietPlan(
+                user_plan_id=db_plan.id,
+                day=diet.day,
+                meals=diet.meals
+            )
+            db.add(db_diet)
+
+        db.commit()
+
     return coach_result
