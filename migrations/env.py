@@ -1,21 +1,36 @@
+"""
+Alembic migrations environment configuration.
+
+This module configures the Alembic migration environment for the Diet Fitness application.
+It handles:
+1. Loading database connection details from environment variables
+2. Setting up the SQLAlchemy models for migration generation
+3. Providing functions for running migrations in both online and offline modes
+
+This configuration ensures that database schema changes can be applied consistently
+across different environments (development, testing, production).
+"""
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
 # Import Base and all models to ensure they're included in Base.metadata
+# This is essential for Alembic to detect model changes for migrations
 from app.db.models import Base, User, UserPlan, WorkoutPlan, DietPlan
 from app.db.database import engine
 import os
 from dotenv import load_dotenv
 
-
+# Load environment variables from .env file
+# This allows database configuration to be stored securely outside of code
 load_dotenv()
 
-# Load Alembic configuration
+# Load Alembic configuration from alembic.ini
 config = context.config
 
-# Override sqlalchemy.url from alembic.ini
+# Override sqlalchemy.url from alembic.ini with the value from environment variables
+# This allows different database URLs for different environments without changing the config file
 database_url = os.getenv("DATABASE_URL")
 if not database_url:
     raise ValueError("DATABASE_URL environment variable is not set or is empty")
