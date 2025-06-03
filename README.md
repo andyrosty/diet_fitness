@@ -1,13 +1,23 @@
 # Fitness And Diet App
 
-A FastAPI application that generates personalized fitness and diet plans using AI. The app analyzes a user's current eating habits, weight goals, and workout preferences to create customized 7-day workout and diet plans, along with an estimate of how long it will take to reach their weight goal.
+A comprehensive FastAPI-based web application that leverages AI to generate personalized fitness and diet plans. This application helps users achieve their weight goals by analyzing their current eating habits, dietary preferences, weight goals, and workout preferences to create customized 7-day workout and diet plans. The app also provides an estimate of how long it will take to reach their weight goal based on the generated plans.
+
+## Overview
+
+The Fitness And Diet App is a full-stack solution that combines:
+
+1. **User Authentication System**: Secure signup and login functionality using OAuth2 with JWT tokens
+2. **Database Integration**: Persistent storage of user accounts, fitness plans, workout schedules, and diet plans
+3. **AI-Powered Plan Generation**: Two-stage AI pipeline using OpenAI's models to create personalized plans and estimate progress
+4. **RESTful API**: Well-structured endpoints for user registration, authentication, plan generation, and retrieval
+5. **Cultural Sensitivity**: Special attention to respecting users' existing dietary habits and cultural preferences
 
 ## Features
 
 - **Personalized Workout Plans**: Generate 7-day workout schedules based on user preferences
 - **Culturally Sensitive Diet Plans**: Create 7-day meal plans that respect the user's current eating habits
 - **Progress Estimation**: Predict how many days it will take to reach weight goals
-- **AI-Powered**: Utilizes OpenAI's GPT-4o model for intelligent recommendations
+- **AI-Powered**: Utilizes OpenAI's GPT-o3 & GPT-4o amodel for intelligent recommendations
 
 ## Installation
 
@@ -33,6 +43,13 @@ A FastAPI application that generates personalized fitness and diet plans using A
    OPENAI_API_KEY=your_openai_api_key_here
    ```
 
+5. Set up the database:
+   - For detailed instructions on setting up the database with Docker, see [DOCKER_SETUP.md](DOCKER_SETUP.md)
+   - For information on running database migrations, see [README_MIGRATIONS.md](README_MIGRATIONS.md)
+
+6. Authentication setup:
+   - For details on the authentication implementation, see [README_AUTH.md](README_AUTH.md)
+
 ## Usage
 
 1. Start the FastAPI server:
@@ -50,7 +67,13 @@ A FastAPI application that generates personalized fitness and diet plans using A
 
 ## API Endpoints
 
-- **POST /fitness-plan**: Submit user information and receive a personalized fitness and diet plan
+### Authentication Endpoints
+- **POST /auth/signup**: Register a new user account with username, email, and password
+- **POST /auth/login**: Authenticate a user and receive a JWT access token
+
+### Fitness Plan Endpoints
+- **POST /api/fitness-plan**: Submit user information and receive a personalized fitness and diet plan (requires authentication)
+- **GET /api/my-plans**: Retrieve all previously generated fitness and diet plans for the current user (requires authentication)
 
 ## Project Structure
 
@@ -59,25 +82,61 @@ diet_fitness/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py                  # FastAPI application entry point
+│   ├── auth/                    # Authentication modules
+│   ├── db/                      # Database models and connection
 │   └── diet_fit_app/
 │       ├── __init__.py
 │       ├── controller.py        # API endpoints definition
 │       ├── models.py            # Pydantic data models
 │       └── service.py           # Business logic and AI integration
+├── migrations/                  # Database migration files
 ├── requirements.txt             # Project dependencies
 ├── test_app.py                  # Basic app import test
-└── README.md                    # Project documentation
+├── README.md                    # Project documentation
+├── DOCKER_SETUP.md              # Docker setup instructions
+├── README_AUTH.md               # Authentication documentation
+├── README_MIGRATIONS.md         # Database migrations guide
+└── TASKS.md                     # Implementation plan
 ```
+
+For a detailed implementation plan for user authentication and database integration, see [TASKS.md](TASKS.md).
 
 ## How It Works
 
-The application uses a two-stage AI pipeline to generate personalized fitness and diet plans:
+The application follows a comprehensive workflow to deliver personalized fitness and diet plans:
 
-1. **Plan Generation**: The first stage uses OpenAI's GPT-4o model to analyze the user's dietary preferences, current weight, weight goal, and workout frequency to create a 7-day workout plan and a 7-day culturally sensitive diet plan.
+### 1. User Authentication Flow
+- Users register with a username, email, and password
+- Passwords are securely hashed before storage in the database
+- Upon login, users receive a JWT token for authenticating subsequent API requests
+- All fitness plan operations require valid authentication
 
-2. **Progress Estimation**: The second stage uses another GPT-4o model to analyze the generated plans and estimate how many days it will take for the user to reach their weight goal, considering the user's consistency, frequency, and intensity of the routine.
+### 2. AI-Powered Plan Generation Pipeline
+The application uses a sophisticated two-stage AI pipeline to generate personalized fitness and diet plans:
 
-The AI models are integrated using the Pydantic-AI library, which provides a structured way to define AI agents and their inputs/outputs.
+#### Stage 1: Plan Generation (GPT-03 Model)
+- Takes detailed user input including:
+  - Current weight and weight goal
+  - Workout frequency preferences
+  - Typical meals (breakfast, lunch, dinner, snacks)
+  - Dietary restrictions and preferences
+  - Favorite meals and comfort foods
+  - Eating out habits
+- Generates a culturally sensitive 7-day workout plan with specific activities for each day
+- Creates a personalized 7-day diet plan that respects the user's existing eating habits and preferences
+
+#### Stage 2: Progress Estimation (GPT-4o Model)
+- Analyzes the generated workout and diet plans
+- Considers the intensity, frequency, and consistency of the proposed routine
+- Estimates how many days it will take for the user to reach their weight goal
+- Provides this timeline as part of the final plan
+
+### 3. Data Persistence
+- All generated plans are stored in the database and associated with the user's account
+- Users can retrieve their previously generated plans at any time
+- The database maintains separate tables for user accounts, plans, workouts, and diet details
+
+The AI models are integrated using the Pydantic-AI library, which provides a structured way to define AI agents and their inputs/outputs, ensuring type safety and consistent data handling throughout the application.
 
 ## Dependencies
 
