@@ -20,3 +20,6 @@ venv/
 .idea/
 .vscode/
 *.iml
+
+#misc
+tasks_concerns.md
