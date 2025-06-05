@@ -44,11 +44,11 @@ The Fitness And Diet App is a full-stack solution that combines:
    ```
 
 5. Set up the database:
-   - For detailed instructions on setting up the database with Docker, see [DOCKER_SETUP.md](DOCKER_SETUP.md)
-   - For information on running database migrations, see [README_MIGRATIONS.md](README_MIGRATIONS.md)
+   - For detailed instructions on setting up the database with Docker, see [DOCKER_SETUP.md](docs/DOCKER_SETUP.md)
+   - For information on running database migrations, see [README_MIGRATIONS.md](docs/README_MIGRATIONS.md)
 
 6. Authentication setup:
-   - For details on the authentication implementation, see [README_AUTH.md](README_AUTH.md)
+   - For details on the authentication implementation, see [README_AUTH.md](docs/README_AUTH.md)
 
 ## Usage
 
