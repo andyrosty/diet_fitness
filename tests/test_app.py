@@ -8,9 +8,9 @@ It's a simple diagnostic tool to ensure the application is properly configured.
 import sys
 import os
 
-# Add the current directory to the Python path
+# Add the parent directory to the Python path
 # This ensures the app package can be found regardless of how the script is run
-sys.path.append(os.getcwd())
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
     # Attempt to import the FastAPI application

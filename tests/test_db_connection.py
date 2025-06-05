@@ -7,8 +7,12 @@ tool to help troubleshoot database connectivity issues before running the main
 application.
 """
 import os
+import sys
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
+
+# Add the parent directory to the Python path to ensure we can find the .env file
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Load environment variables from .env file
 # This allows database configuration to be stored securely outside of code
