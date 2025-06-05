@@ -67,3 +67,19 @@ class CoachResult(BaseModel):
     workout_plan: List[WorkoutPlan] = Field(..., description="7-day custom workout schedule")
     diet_plan: List[DietPlan] = Field(..., description="7-day culturally sensitive diet plan")
     estimated_days_to_goal: int = Field(..., example=45, description="Projected days to reach target weight")
+
+
+class UserPlanUpdate(BaseModel):
+    # Model for updating an existing user plan
+    current_weight: Optional[str] = Field(None, example="185 lbs")
+    weight_goal: Optional[str] = Field(None, example="Lose 5 lbs (target: 180 lbs)")
+    workout_frequency: Optional[str] = Field(None, example="Workout 3 times per week")
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "current_weight": "185 lbs",
+                "weight_goal": "Lose 5 lbs (target: 180 lbs)",
+                "workout_frequency": "Workout 3 times per week"
+            }
+        }
