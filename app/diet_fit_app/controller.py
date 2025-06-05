@@ -11,7 +11,7 @@ from app.db.models import User, UserPlan, WorkoutPlan, DietPlan
 from app.auth.dependencies import get_current_user
 
 
-# Router for nutrition and fitness analysis endpoints
+# Router  for nutrition and fitness analysis endpoints
 router = APIRouter()
 
 @router.post("/fitness-plan", response_model=CoachResult)

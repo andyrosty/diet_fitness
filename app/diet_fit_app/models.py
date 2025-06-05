@@ -51,7 +51,7 @@ class UserInput(BaseModel):
 
 
 class WorkoutPlan(BaseModel):
-    # Output model for a day's workout recommendation
+    # Outputs model for a day's workout recommendation
     day: Weekday
     activity: str = Field(..., example="30 mins of cardio and core workouts")
 
