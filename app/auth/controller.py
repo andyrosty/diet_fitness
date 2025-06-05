@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
@@ -7,6 +7,7 @@ from app.db.models import User
 from app.auth.schemas import UserCreate, Token, UserResponse
 from app.auth.utils import get_password_hash, verify_password
 from app.auth.token import create_access_token
+from app.auth.dependencies import get_current_user
 
 # Authentication controller for handling user registration and login
 # Provides endpoints for user signup and authentication
@@ -81,3 +82,29 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     # Generate JWT token with username as subject
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.delete("/users/me", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Delete user account endpoint.
+
+    Allows authenticated users to delete their own account.
+    This will also delete all associated user plans, workout plans, and diet plans
+    due to cascade delete relationships.
+
+    Args:
+        current_user: The authenticated user (from token)
+        db: Database session dependency
+
+    Returns:
+        204 No Content response on successful deletion
+
+    Raises:
+        HTTPException: If user deletion fails
+    """
+    # Delete the user from the database
+    db.delete(current_user)
+    db.commit()
+
+    # Return 204 No Content response
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

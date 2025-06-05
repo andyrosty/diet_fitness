@@ -66,6 +66,37 @@ def test_protected_endpoint(token):
         print(response.text)
     return response.status_code == 200
 
+def test_delete_user(token):
+    """Test user deletion endpoint"""
+    if not token:
+        print("No token available, skipping user deletion test")
+        return False
+
+    response = requests.delete(
+        f"{BASE_URL}/auth/users/me",
+        headers={"Authorization": f"Bearer {token}"}
+    )
+    print("Delete User Response:", response.status_code)
+
+    # Check if deletion was successful (204 No Content)
+    deletion_success = response.status_code == 204
+
+    if deletion_success:
+        print("User successfully deleted")
+
+        # Verify user is deleted by trying to access protected endpoint again
+        verify_response = requests.get(
+            f"{BASE_URL}/api/my-plans",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+        print("Verification Response:", verify_response.status_code)
+        # Should return 401 Unauthorized if user was deleted
+        print("Verification successful:", verify_response.status_code == 401)
+    else:
+        print("User deletion failed")
+
+    return deletion_success
+
 if __name__ == "__main__":
     print("Testing user signup...")
     signup_success = test_signup()
@@ -74,4 +105,9 @@ if __name__ == "__main__":
     token = test_login()
 
     print("\nTesting protected endpoint...")
-    test_protected_endpoint(token)
+    protected_success = test_protected_endpoint(token)
+
+    # Only test deletion if previous steps were successful
+    if protected_success:
+        print("\nTesting user deletion...")
+        test_delete_user(token)
