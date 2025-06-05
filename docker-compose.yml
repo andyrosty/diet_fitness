@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: diet_fitness_app
+    environment:
+      DATABASE_URL: postgresql://andyrosty:pass1234@postgres:5432/diet_fitness_db
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+
   postgres:
     image: postgres:15
     container_name: diet_fitness_db

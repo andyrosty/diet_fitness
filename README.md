@@ -21,6 +21,30 @@ The Fitness And Diet App is a full-stack solution that combines:
 
 ## Installation
 
+### Option 1: Using Docker (Recommended)
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/diet_fitness.git
+   cd diet_fitness
+   ```
+
+2. Create a `.env` file in the root directory with your OpenAI API key:
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
+
+3. Build and run the application using Docker Compose:
+   ```
+   docker-compose up -d
+   ```
+
+4. The application will be available at `http://localhost:8000`
+
+For more detailed instructions on using Docker, see [DOCKER_USAGE.md](docs/DOCKER_USAGE.md)
+
+### Option 2: Manual Setup
+
 1. Clone the repository:
    ```
    git clone https://github.com/yourusername/diet_fitness.git
@@ -41,6 +65,7 @@ The Fitness And Diet App is a full-stack solution that combines:
 4. Create a `.env` file in the root directory with your OpenAI API key:
    ```
    OPENAI_API_KEY=your_openai_api_key_here
+   DATABASE_URL=postgresql://username:password@localhost/diet_fitness_db
    ```
 
 5. Set up the database:
