@@ -1,6 +1,6 @@
-# Docker Setup for Diet Fitness Application
+# Docker Usage Guide for Diet Fitness Application
 
-This document explains how to use Docker to build and run the Diet Fitness application.
+This document explains how to use Docker to build and run the Diet Fitness application. For initial setup instructions, please refer to [DOCKER_SETUP.md](DOCKER_SETUP.md).
 
 ## Prerequisites
 
@@ -14,9 +14,10 @@ Before running the application, you need to set up environment variables:
 1. Create a `.env` file in the root directory of the project:
 
 ```
-DATABASE_URL=postgresql://andyrosty:pass1234@postgres:5432/diet_fitness_db
 OPENAI_API_KEY=your_openai_api_key_here
 ```
+
+The database connection is already configured in the docker-compose.yml file, so you don't need to specify it in the .env file.
 
 ## Building and Running
 

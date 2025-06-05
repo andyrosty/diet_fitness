@@ -17,7 +17,7 @@ The Fitness And Diet App is a full-stack solution that combines:
 - **Personalized Workout Plans**: Generate 7-day workout schedules based on user preferences
 - **Culturally Sensitive Diet Plans**: Create 7-day meal plans that respect the user's current eating habits
 - **Progress Estimation**: Predict how many days it will take to reach weight goals
-- **AI-Powered**: Utilizes OpenAI's GPT-o3 & GPT-4o amodel for intelligent recommendations
+- **AI-Powered**: Utilizes OpenAI's GPT-3.5 & GPT-4o models for intelligent recommendations
 
 ## Installation
 
@@ -34,6 +34,8 @@ The Fitness And Diet App is a full-stack solution that combines:
    OPENAI_API_KEY=your_openai_api_key_here
    ```
 
+   Note: The database connection is already configured in the docker-compose.yml file.
+
 3. Build and run the application using Docker Compose:
    ```
    docker-compose up -d
@@ -41,7 +43,8 @@ The Fitness And Diet App is a full-stack solution that combines:
 
 4. The application will be available at `http://localhost:8000`
 
-For more detailed instructions on using Docker, see [DOCKER_USAGE.md](docs/DOCKER_USAGE.md)
+For more detailed instructions on Docker setup, see [DOCKER_SETUP.md](docs/DOCKER_SETUP.md)
+For instructions on using Docker after setup, see [DOCKER_USAGE.md](docs/DOCKER_USAGE.md)
 
 ### Option 2: Manual Setup
 
@@ -118,9 +121,11 @@ diet_fitness/
 ├── requirements.txt             # Project dependencies
 ├── test_app.py                  # Basic app import test
 ├── README.md                    # Project documentation
-├── DOCKER_SETUP.md              # Docker setup instructions
-├── README_AUTH.md               # Authentication documentation
-├── README_MIGRATIONS.md         # Database migrations guide
+├── docs/
+│   ├── DOCKER_SETUP.md          # Docker setup instructions
+│   ├── DOCKER_USAGE.md          # Docker usage guide
+│   ├── README_AUTH.md           # Authentication documentation
+│   ├── README_MIGRATIONS.md     # Database migrations guide
 └── TASKS.md                     # Implementation plan
 ```
 
@@ -139,7 +144,7 @@ The application follows a comprehensive workflow to deliver personalized fitness
 ### 2. AI-Powered Plan Generation Pipeline
 The application uses a sophisticated two-stage AI pipeline to generate personalized fitness and diet plans:
 
-#### Stage 1: Plan Generation (GPT-03 Model)
+#### Stage 1: Plan Generation (GPT-3.5 Model)
 - Takes detailed user input including:
   - Current weight and weight goal
   - Workout frequency preferences
