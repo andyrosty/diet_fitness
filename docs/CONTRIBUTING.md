@@ -117,6 +117,7 @@ By contributing to this project, you agree that your contributions will be licen
 
 ## Questions?
 
-If you have any questions about contributing, please open an issue or contact the project maintainers.
+If you have any questions about contributing, please open an issue or contact the project maintainer.
+andrew.acheampong@orlikdesiglab.com
 
 Thank you for your contributions!
