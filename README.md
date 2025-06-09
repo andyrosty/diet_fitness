@@ -45,6 +45,7 @@ The Fitness And Diet App is a full-stack solution that combines:
 
 For more detailed instructions on Docker setup, see [DOCKER_SETUP.md](docs/DOCKER_SETUP.md)
 For instructions on using Docker after setup, see [DOCKER_USAGE.md](docs/DOCKER_USAGE.md)
+For infrastructure provisioning using Terraform, see [TERRAFORM.md](docs/TERRAFORM.md)
 
 ### Option 2: Manual Setup
 
@@ -126,6 +127,7 @@ diet_fitness/
 │   ├── DOCKER_USAGE.md          # Docker usage guide
 │   ├── README_AUTH.md           # Authentication documentation
 │   ├── README_MIGRATIONS.md     # Database migrations guide
+│   ├── TERRAFORM.md             # Terraform provisioning guide
 └── TASKS.md                     # Implementation plan
 ```
 
