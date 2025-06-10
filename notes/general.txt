@@ -1,0 +1,142 @@
+Upgrades and Enhancements for a Full-Fledged Personal Trainer Backend
+
+1. User Profile & Metrics
+   - Extend user model with age, gender, height, body fat percentage, fitness level.
+   - Enable storage of biometric measurements (e.g., waist, hips, blood pressure).
+   - Add endpoint to update/view profile and baseline metrics.
+
+2. Workout & Progress Tracking
+   - Add endpoints to log completed workouts (with actual duration, sets, reps, weights).
+   - Store workout history; compute trends (volume, frequency, progression).
+   - Provide an endpoint to retrieve progress summaries and graph-ready data (e.g., weight over time).
+
+3. Nutrition Logging & Macro Tracking
+   - Add endpoints for daily meal logs (calories, macros breakdown).
+   - Integrate a food database or nutrition API to auto-calculate macros from user entries.
+   - Generate weekly nutrition summaries and trend analytics.
+
+4. Plan Scheduling & Reminders
+   - Introduce scheduling: allow users to assign specific times to workouts and meals.
+   - Integrate with a task scheduler (e.g., Celery + Redis) to send email/SMS/push notifications as reminders.
+   - Extend notifications to include adaptive, motivational messages that keep users engaged (e.g., “Time for your workout!”, “Don’t forget to log your meal”).
+   - Provide user-configurable preferences for notification channels, frequency, and quiet hours to tailor the experience.
+   - Bundle or batch reminders intelligently to prevent notification fatigue, adjusting send-times based on user behavior, local time zones, or past interactions.
+   - Add endpoints to snooze, cancel, or reschedule reminders.
+
+5. AI Coach Chat & Feedback Loop
+   - Implement a conversational chat endpoint so users can ask follow-up questions to the AI coach.
+   - Store chat history and allow context-aware dialogue (e.g., modify plan based on user feedback).
+   - Provide a feedback mechanism to rate AI suggestions and retrain or adjust recommendations.
+
+6. Training Programs & Levels
+   - Offer predefined training programs (e.g., beginner, intermediate, advanced).
+   - Allow users to select or switch programs; adjust workout intensity automatically.
+   - Add templates for strength training, hypertrophy, endurance, mobility.
+
+7. Integrations & Third-Party Sync
+   - Sync workout/nutrition logs with wearable APIs (Fitbit, Strava, Apple Health).
+   - Provide webhooks or OAuth flows for external fitness apps.
+   - Export data in CSV/JSON for users to backup or integrate elsewhere.
+
+8. Advanced AI Capabilities
+   - Replace placeholder estimator with a custom tool function or fine-tuned model.
+   - Incorporate personalized adaptive plans: adjust plan dynamically based on user compliance.
+   - Use AI to detect plateaus and suggest deload weeks, periodization cycles.
+
+9. Community & Social Features
+   - Add endpoints to follow friends, share achievements, or join challenges.
+   - Implement group challenges or leaderboards.
+
+10. Security, Performance & Testing
+   - Enforce rate limiting on AI endpoints to manage API costs.
+   - Secure sensitive endpoints with scopes/roles (e.g., admin, coach, user).
+   - Add end-to-end tests for new features; improve test coverage for critical flows.
+   - Document API changes in docs/API_DOCUMENTATION.md and update OpenAPI schemas.
+
+These enhancements will turn the current AI-powered planner into a comprehensive personal trainer backend,
+providing richer data tracking, interactive coaching, scheduling, integrations, and community engagement.
+
+--- Feature Assignment: Backend vs Frontend Responsibilities ---
+
+For each proposed upgrade, this breakdown shows where (FastAPI backend vs iOS/Apple Watch frontend) the primary work belongs.
+
+1. User Profile & Metrics
+   Backend:
+     - Extend user DB model (age, gender, height, body fat %, fitness level).
+     - APIs to create, read, update profile and baseline metrics.
+   Frontend (iOS + Watch):
+     - Profile setup & edit screens with validation.
+     - Display current metrics and history (charts, tables).
+
+2. Workout & Progress Tracking
+   Backend:
+     - Endpoints to log completed workouts (duration, sets, reps, weights).
+     - Persist workout history; compute trends (volume, frequency, progression).
+     - Summary APIs for chart-ready progress data (e.g., weight over time).
+   Frontend:
+     - UI to record workouts on Watch/iPhone.
+     - Progress graphs (weight, volume, consistency) in app.
+
+3. Nutrition Logging & Macro Tracking
+   Backend:
+     - Daily meal-log endpoints; integrate nutrition database/API.
+     - Compute macros and calories; weekly nutrition summaries.
+   Frontend:
+     - Meal entry UI (text, barcode scanner, favorites).
+     - Display macro/calo breakdown and weekly nutrition dashboard.
+
+4. Plan Scheduling & Reminders
+   Backend:
+     - Scheduler (e.g., Celery + Redis) to queue reminders.
+     - APIs to manage (create, snooze, cancel) reminders.
+     - Push notification integration (APNs, email/SMS webhook).
+   Frontend:
+     - Scheduling UI (date/time pickers) for workouts/meals.
+     - Local notification handling on iOS/Watch.
+
+5. AI Coach Chat & Feedback Loop
+   Backend:
+     - Chat endpoint; maintain conversation context server-side.
+     - Persist chat transcripts and feedback ratings.
+   Frontend:
+     - Chat interface (message bubbles, input).
+     - Feedback/rating UI after suggestions.
+
+6. Training Programs & Levels
+   Backend:
+     - Store predefined program templates (beginner → advanced).
+     - APIs to select/switch programs and adjust workout intensity.
+   Frontend:
+     - Program selection/onboarding screens.
+     - Display program details and progression status.
+
+7. Integrations & Third-Party Sync
+   Backend:
+     - OAuth flows/webhooks for Fitbit, Strava, etc.
+     - Data import/export endpoints (CSV/JSON).
+   Frontend:
+     - HealthKit/WatchKit sync for workouts/nutrition.
+     - OAuth UI flows for external services.
+
+8. Advanced AI Capabilities
+   Backend:
+     - Implement estimator tool or fine-tuned model.
+     - Adaptive plan logic: adjust based on user compliance.
+   Frontend:
+     - Display updated plans dynamically.
+     - UI to trigger re-planning or feedback submission.
+
+9. Community & Social Features
+   Backend:
+     - User relationships, challenges, leaderboards APIs.
+   Frontend:
+     - Friends list, challenge feeds, badges.
+
+10. Security, Performance & Testing
+   Backend:
+     - Rate limit AI endpoints; enforce scopes/roles.
+     - End-to-end tests and monitoring for API usage.
+     - Update docs/API_DOCUMENTATION.md and OpenAPI schemas.
+   Frontend:
+     - Input validation; error handling and role-based UI gating.
+     - Automated UI tests (XCTest) and performance profiling.
