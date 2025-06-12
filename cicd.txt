@@ -1,0 +1,120 @@
+Below is a minimal end-to-end example of how you can wire up GitHub Actions to:
+
+ 1. Build your Docker image on every push
+ 2. Push it to Docker Hub (or GitHub Container Registry)
+ 3. Trigger a rolling‐update on a Kubernetes Deployment
+
+You can of course adapt it for GitLab CI, Jenkins, or for Docker-Swarm instead of k8s—this gives you the pattern.
+
+1. Prerequisites
+
+- A Docker registry account (e.g. Docker Hub, GHCR).
+- A Kubernetes cluster you can `kubectl` into (or a Docker Swarm host you can SSH into).
+- In your GitHub repo Settings → Secrets, add:
+  - `DOCKERHUB_USERNAME`
+  - `DOCKERHUB_TOKEN` (or `CR_PAT` if using GHCR)
+  - `KUBE_CONFIG_DATA` (base64-encoded contents of your `~/.kube/config`)
+
+2. GitHub Actions workflow
+
+Create a file at `.github/workflows/ci-cd.yml` with the following contents:
+
+```yaml
+name: CI/CD
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  IMAGE_NAME: my-dockerhub-user/my-app   # change to your registry/namespace
+
+jobs:
+  build-and-push:
+    name: Build & Push Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU (optional)
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build & push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+  deploy:
+    name: Deploy to Kubernetes
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: '1.27.1'
+
+      - name: Restore kubeconfig
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Rollout new image
+        run: |
+          kubectl set image deployment/my-app-deployment my-app-container=${{ env.IMAGE_NAME }}:latest
+          kubectl rollout status deployment/my-app-deployment
+```  
+
+3. Adapting for Docker Swarm
+
+If you’re using Docker Swarm, you can replace the `deploy` job with:
+
+```yaml
+deploy-swarm:
+  needs: build-and-push
+  runs-on: ubuntu-latest
+  steps:
+    - name: Install SSH client
+      run: sudo apt-get update && sudo apt-get install -y ssh
+
+    - name: SSH & update service
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        IMAGE: ${{ env.IMAGE_NAME }}:latest
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
+        ssh -o StrictHostKeyChecking=no user@swarm-manager <<EOF
+          docker service update \
+            --image $IMAGE \
+            --with-registry-auth \
+            my_app_service
+        EOF
+```  
+
+4. Next Steps
+
+- Tweak triggers (branches, tags, PRs)  
+- Add automated tests as a separate job before deploy  
+- Use Helm or kustomize for richer k8s templating  
+- Secure your pipeline: scan images, enforce branch protection  
+
+With this in place, every push to `main` automatically builds your image and deploys it to your cluster.

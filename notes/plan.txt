@@ -1,0 +1,41 @@
+Minimal-to-MVP Roadmap for Personal Trainer App
+
+1. Solidify Core Backend & Auth (Weeks 1–2)
+   - User signup/login (already in place—add full test coverage)
+   - Profile/metrics models & CRUD APIs (age, height, weight, goals)
+   - Plan generation endpoint + persistence (exercise/diet + estimate)
+   - Documentation & automated tests for these flows
+
+2. Basic Frontend Skeleton & Data Flow (Weeks 2–3)
+   - Simple iOS screens for auth, profile entry, and "Generate Plan" button
+   - Wire up calls to /auth, /api/fitness-plan, /api/my-plans
+   - Display returned plan in a static list view
+
+3. Workout & Progress Tracking (Weeks 3–5)
+   - Backend: "Log completed workout" endpoint + history retrieval
+   - Frontend: UI on Watch/iPhone to record sets/reps and a "History" tab
+
+4. Nutrition Logging & Macro Tracking (Weeks 5–7)
+   - Backend: Meal-log endpoint + macro calculator (start with manual entry)
+   - Frontend: Daily meal-entry screen + simple macro summary
+
+5. Plan Scheduling & Local Notifications (Weeks 7–9)
+   - Backend: Reminder APIs (create, snooze, cancel) + Celery scheduler stub
+   - Frontend: Date/time pickers for workouts/meals + local notification handler
+
+6. Iterate on AI & Estimation Quality (Weeks 9–11)
+   - Replace the placeholder estimator with a real tool or fine-tuned model
+   - Add end-to-end tests to validate plan consistency
+
+7. Conversational Coaching & Feedback (Weeks 11–13)
+   - Backend: Chat endpoint + transcript storage
+   - Frontend: Chat UI + rating buttons
+
+8. Integrations & Community (Weeks 13+)
+   - HealthKit/WatchKit sync; OAuth for Strava/Fitbit
+   - Friends/challenges APIs + social screens
+
+9. Polish, Performance & Security (Ongoing)
+   - Rate-limit AI calls; monitor usage and costs
+   - Expand test coverage (unit, integration, UI)
+   - Harden auth scopes/roles and update OpenAPI docs
