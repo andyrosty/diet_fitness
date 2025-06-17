@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # Fitness And Diet App
 
 A FastAPI application that generates personalized fitness and diet plans using AI. The app analyzes a user's current eating habits, weight goals, and workout preferences to create customized 7-day workout and diet plans, along with an estimate of how long it will take to reach their weight goal.
@@ -152,4 +150,3 @@ This project currently has no license. Please contact the maintainers for licens
 }
 ```
 
->>>>>>> 76a0147 (Add initial project files and documentation)
