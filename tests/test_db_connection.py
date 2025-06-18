@@ -7,6 +7,7 @@ connectivity issues during testing.
 """
 import pytest
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 def test_db_connection(db):
     """Test that we can connect to the database"""
@@ -15,5 +16,5 @@ def test_db_connection(db):
     assert isinstance(db, Session)
 
     # Test that we can execute a simple query
-    result = db.execute("SELECT 1").scalar()
+    result = db.execute(text("SELECT 1")).scalar()
     assert result == 1
