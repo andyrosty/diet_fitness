@@ -109,6 +109,7 @@ This project currently has no license. Please contact the maintainers for licens
 - Python-dotenv: Environment variable management
 - OpenAI: AI model provider
 - HTTPX: HTTP client for async requests
+- Python-JOSE: JWT token handling library
 
 ## Example Request(Ghanian Diet)
 
