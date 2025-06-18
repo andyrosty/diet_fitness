@@ -1,0 +1,24 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/diet-fitness-app:latest",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": "8000",
+      "HostPort": "80"
+    }
+  ],
+  "Logging": "/var/log/app",
+  "Environment": [
+    {
+      "Name": "DATABASE_URL",
+      "Value": "PLACEHOLDER_DATABASE_URL"
+    },
+    {
+      "Name": "OPENAI_API_KEY",
+      "Value": "PLACEHOLDER_OPENAI_API_KEY"
+    }
+  ]
+}

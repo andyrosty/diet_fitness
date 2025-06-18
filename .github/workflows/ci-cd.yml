@@ -11,6 +11,21 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -26,13 +41,16 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run tests locally
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: pytest
 
       - name: Build Docker image
         run: docker build -t diet-fitness-app:latest .
 
       - name: Run tests inside Docker
-        run: docker run --rm diet-fitness-app:latest pytest
+        run: docker run --rm --network host -e DATABASE_URL="postgresql://postgres:postgres@localhost:5432/test_db" -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" diet-fitness-app:latest pytest
 
   deploy:
     needs: build-and-test
@@ -73,10 +91,14 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: diet-fitness-app
           AWS_REGION: ${{ secrets.AWS_REGION }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           # Replace placeholders in Dockerrun.aws.json
           sed -i "s|ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com|$ECR_REGISTRY|g" Dockerrun.aws.json
           sed -i "s|diet-fitness-app:latest|$ECR_REPOSITORY:${{ github.sha }}|g" Dockerrun.aws.json
+          sed -i "s|PLACEHOLDER_DATABASE_URL|$DATABASE_URL|g" Dockerrun.aws.json
+          sed -i "s|PLACEHOLDER_OPENAI_API_KEY|$OPENAI_API_KEY|g" Dockerrun.aws.json
 
       - name: Deploy to Elastic Beanstalk
         env:
