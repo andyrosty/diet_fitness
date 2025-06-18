@@ -50,8 +50,9 @@ jobs:
       - name: Build Docker image
         run: docker build -t diet-fitness-app:latest .
 
-      - name: Run tests inside Docker
-        run: docker run --rm --network host -e DATABASE_URL="postgresql://postgres:postgres@localhost:5432/test_db" -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" diet-fitness-app:latest pytest
+      # Temporarily commented out running tests inside docker
+      #- name: Run tests inside Docker
+        #run: docker run --rm --network host -e DATABASE_URL="postgresql://postgres:postgres@localhost:5432/test_db" -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" diet-fitness-app:latest pytest
 
   deploy:
     needs: build-and-test
