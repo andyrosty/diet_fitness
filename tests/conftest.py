@@ -100,6 +100,33 @@ def pg_db():
         # Drop the tables after the test is complete
         Base.metadata.drop_all(bind=pg_engine)
 
+# Override token functions to use test secret key
+def test_create_access_token(data: dict):
+    """Test version of create_access_token that uses the test secret key"""
+    from datetime import datetime, timedelta
+    from jose import jwt
+    from app.auth.token import ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, TEST_JWT_SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+def test_verify_token(token: str):
+    """Test version of verify_token that uses the test secret key"""
+    from jose import JWTError, jwt
+    from app.auth.token import ALGORITHM
+
+    try:
+        payload = jwt.decode(token, TEST_JWT_SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            return None
+        return username
+    except JWTError:
+        return None
+
 @pytest.fixture(scope="function")
 def client(db):
     """
@@ -149,33 +176,6 @@ def test_user(db):
     db.commit()
     db.refresh(user)
     return user
-
-# Override token functions to use test secret key
-def test_create_access_token(data: dict):
-    """Test version of create_access_token that uses the test secret key"""
-    from datetime import datetime, timedelta
-    from jose import jwt
-    from app.auth.token import ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-
-    to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, TEST_JWT_SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-def test_verify_token(token: str):
-    """Test version of verify_token that uses the test secret key"""
-    from jose import JWTError, jwt
-    from app.auth.token import ALGORITHM
-
-    try:
-        payload = jwt.decode(token, TEST_JWT_SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            return None
-        return username
-    except JWTError:
-        return None
 
 @pytest.fixture(scope="function")
 def token(test_user):
