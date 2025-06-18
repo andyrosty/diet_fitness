@@ -10,14 +10,16 @@ from app.auth.controller import router as auth_router
 from app.db.database import engine
 from app.db import models
 
-load_dotenv()  # Load environment variables from .env file
+# Load environment variables from .env file
+load_dotenv()
 
-import os
 # Retrieve API key for external AI provider
+import os
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Create database tables
-models.Base.metadata.create_all(bind=engine)
+# Create database tables when running normally (skip during tests/import)
+if os.getenv("TEST_MODE") != "1":
+    models.Base.metadata.create_all(bind=engine)
 
 # Initialize FastAPI application
 app = FastAPI(title="Fitness And Diet App")

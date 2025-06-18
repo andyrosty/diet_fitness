@@ -1,4 +1,6 @@
 import os
+# Ensure test mode flag is set before importing the application (skip DB creation on import)
+os.environ["TEST_MODE"] = "1"
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -111,26 +113,24 @@ def client(db):
             pass
 
     # Override token verification to use test secret key
-    from app.auth.dependencies import get_current_user
     from app.auth.token import verify_token
 
     # Store original function to restore later
     original_verify_token = verify_token
 
     # Patch the verify_token function in the auth module
-    import app.auth.token
-    app.auth.token.verify_token = test_verify_token
+    import app.auth.token as auth_token_module
+    auth_token_module.verify_token = test_verify_token
 
+    # Override the get_db dependency to use our test database
     app.dependency_overrides[get_db] = override_get_db
 
-    # Create a test client
+    # Create a test client in-process
     with TestClient(app) as client:
         yield client
 
-    # Restore original verify_token function
-    app.auth.token.verify_token = original_verify_token
-
-    # Remove the dependency overrides
+    # Restore original verify_token function and clear overrides
+    auth_token_module.verify_token = original_verify_token
     app.dependency_overrides.clear()
 
 @pytest.fixture(scope="function")
