@@ -109,4 +109,4 @@ jobs:
           EB_ENV_NAME: production-environment
         run: |
           eb init $EB_APP_NAME --platform docker --region ${{ secrets.AWS_REGION }}
-          eb deploy $EB_ENV_NAME --version ${{ github.sha }}
+          eb deploy $EB_ENV_NAME
