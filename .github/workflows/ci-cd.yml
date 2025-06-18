@@ -47,6 +47,7 @@ jobs:
       #     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       #   run: pytest
 
+
       - name: Build Docker image
         run: docker build -t diet-fitness-app:latest .
 
