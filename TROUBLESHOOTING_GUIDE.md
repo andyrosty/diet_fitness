@@ -147,3 +147,14 @@ If you receive a 503 Service Unavailable response from the API:
 - This usually indicates that the database connection failed during the request
 - Check that PostgreSQL is running and properly configured
 - See the database connection errors section above for more troubleshooting steps
+
+#### Common Database Connection Errors
+
+If you see an error like "Textual SQL expression 'SELECT 1' should be explicitly declared as text('SELECT 1')" in the logs:
+- This is related to SQLAlchemy's query execution
+- The application has been updated to handle this properly
+- If you're developing custom database queries, remember to use SQLAlchemy's text() function for raw SQL:
+  ```python
+  from sqlalchemy import text
+  db.execute(text("YOUR SQL QUERY HERE"))
+  ```

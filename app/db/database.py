@@ -4,7 +4,7 @@ Database configuration module for the Diet Fitness application.
 This module sets up the SQLAlchemy ORM connection to the database and provides
 the necessary components for database operations throughout the application.
 """
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
@@ -73,7 +73,7 @@ def get_db():
         db = SessionLocal()
         try:
             # Test the connection by executing a simple query
-            db.execute("SELECT 1")
+            db.execute(text("SELECT 1"))
             # Provide the session to the route handler
             yield db
         finally:
