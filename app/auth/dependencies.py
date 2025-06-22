@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.db.models import User
-from app.auth.token import verify_token
+import app.auth.token as auth_token_module
 
 # Authentication dependencies for securing API endpoints
 # These dependencies are used to protect routes that require authentication
@@ -33,7 +33,8 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         HTTPException: If token is invalid or user doesn't exist
     """
     # Verify token and extract username
-    username = verify_token(token)
+    # Verify token and extract username using token module
+    username = auth_token_module.verify_token(token)
     if username is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

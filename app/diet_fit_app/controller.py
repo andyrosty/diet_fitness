@@ -5,7 +5,13 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 
 from app.diet_fit_app.models import UserInput, CoachResult, UserPlanUpdate
-from app.diet_fit_app.service import run_fitness_pipeline
+import warnings
+try:
+    from app.diet_fit_app.service import run_fitness_pipeline
+except ImportError as _err:
+    # Service dependencies are missing; stub out the pipeline to return errors at runtime
+    warnings.warn(f"Could not import run_fitness_pipeline: {_err}")
+    run_fitness_pipeline = None
 from app.db.database import get_db
 from app.db.models import User, UserPlan, WorkoutPlan, DietPlan
 from app.auth.dependencies import get_current_user

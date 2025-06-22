@@ -12,12 +12,18 @@ from dotenv import load_dotenv
 
 # Load environment variables from .env file
 # This allows database configuration to be stored securely outside of code
+# Load environment variables from .env file
 load_dotenv()
-
+# Detect test mode to allow using a fallback database URL during testing
+TEST_MODE = os.getenv("TEST_MODE") == "1"
 # Get database connection string from environment variables
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
-    raise ValueError("DATABASE_URL environment variable is not set or is empty")
+    if TEST_MODE:
+        # In test mode, default to a local SQLite file for simplicity
+        DATABASE_URL = "sqlite:///./test.db"
+    else:
+        raise ValueError("DATABASE_URL environment variable is not set or is empty")
 
 # Create SQLAlchemy engine for connecting to the database
 # The engine is the starting point for any SQLAlchemy application
