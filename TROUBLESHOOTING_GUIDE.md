@@ -115,6 +115,20 @@ If you encounter database connection errors:
 - Check that the database, user, and password match your .env file
 - Ensure the PostgreSQL port (5432) is not blocked by a firewall
 
+#### Fallback SQLite Database
+
+The application now includes a fallback to an in-memory SQLite database when PostgreSQL is not available. This allows the application to start and provide minimal functionality even when the main database is not accessible.
+
+When using the fallback database:
+- Data will not be persisted between application restarts
+- Some features that require specific PostgreSQL functionality may not work
+- You'll see warning messages in the console about the database connection
+
+To disable this fallback and force the application to exit when the database is not available, set the environment variable:
+```
+FAIL_ON_DB_ERROR=1
+```
+
 ### 3. OpenAI API errors
 
 If you encounter OpenAI API errors:
@@ -126,3 +140,10 @@ If you encounter OpenAI API errors:
 If you encounter JWT authentication errors:
 - Ensure JWT_SECRET_KEY is set in your .env file
 - Try logging out and logging in again
+
+### 5. HTTP 503 Service Unavailable errors
+
+If you receive a 503 Service Unavailable response from the API:
+- This usually indicates that the database connection failed during the request
+- Check that PostgreSQL is running and properly configured
+- See the database connection errors section above for more troubleshooting steps

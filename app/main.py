@@ -19,7 +19,17 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Create database tables when running normally (skip during tests/import)
 if os.getenv("TEST_MODE") != "1":
-    models.Base.metadata.create_all(bind=engine)
+    try:
+        models.Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print("\n\033[91mError connecting to database:\033[0m", str(e))
+        print("\n\033[93mPlease make sure PostgreSQL is running and properly configured.\033[0m")
+        print("\033[93mSee the Troubleshooting Guide (TROUBLESHOOTING_GUIDE.md) for more information.\033[0m\n")
+        if os.getenv("FAIL_ON_DB_ERROR", "0") != "1":
+            print("\033[93mContinuing without database connection...\033[0m\n")
+        else:
+            print("\033[93mExiting due to database connection error.\033[0m\n")
+            exit(1)
 
 # Initialize FastAPI application
 app = FastAPI(title="Fitness And Diet App")
