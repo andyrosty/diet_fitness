@@ -42,6 +42,8 @@ A FastAPI application that generates personalized fitness and diet plans using A
 
 2. Access the API documentation at `http://localhost:8000/docs`
 
+> **Note**: If you encounter any issues running the project, please refer to the [Troubleshooting Guide](TROUBLESHOOTING_GUIDE.md) for solutions to common problems.
+
 3. Use the `/fitness-plan` endpoint to submit your information and receive a personalized plan:
    - Weekly meals for each day
    - Current weight
@@ -150,4 +152,3 @@ This project currently has no license. Please contact the maintainers for licens
   "workout_frequency": "Workout 3 times per week"
 }
 ```
-
