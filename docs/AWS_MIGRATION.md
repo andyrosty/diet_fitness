@@ -124,7 +124,7 @@ Since your application is already containerized with Docker, the migration to AW
 ### Docker Compose to AWS Migration
 
 1. **Database Migration**:
-   - Your current PostgreSQL container (postgres:15) will be replaced by RDS
+   - Your current PostgreSQL containers (postgres:15) will be replaced by RDS
    - Update your application's DATABASE_URL environment variable to point to the RDS instance
    - Perform data migration as described in Section 1
 
