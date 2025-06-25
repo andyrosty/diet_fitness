@@ -103,10 +103,13 @@ jobs:
           sed -i "s|PLACEHOLDER_DATABASE_URL|$DATABASE_URL|g" Dockerrun.aws.json
           sed -i "s|PLACEHOLDER_OPENAI_API_KEY|$OPENAI_API_KEY|g" Dockerrun.aws.json
 
+      
       - name: Deploy to Elastic Beanstalk
         env:
           EB_APP_NAME: diet-fitness-app
           EB_ENV_NAME: production-environment
         run: |
           eb init $EB_APP_NAME --platform docker --region ${{ secrets.AWS_REGION }}
-          eb deploy $EB_ENV_NAME
+          eb create --cfg default --timeout 20 $EB_ENV_NAME || echo "Env already exists"
+          eb deploy $EB_ENV_NAME --staged
+
